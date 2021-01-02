@@ -1,0 +1,14 @@
+certifi==2020.12.5
+chardet==4.0.0
+et-xmlfile==1.0.1
+idna==2.10
+isodate==0.6.0
+jdcal==1.4.1
+openpyxl==3.0.5
+pyparsing==2.4.7
+pystache==0.5.4
+rdflib==5.0.0
+requests==2.25.1
+six==1.15.0
+SPARQLWrapper==1.8.5
+urllib3==1.26.2
