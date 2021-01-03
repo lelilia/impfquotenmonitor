@@ -57,7 +57,7 @@ with open("index.html", "w") as index_file:
     index_file.write(renderer.render_path(
         'index.mustache',
         {
-            "sum": f'{sum:,}'.replace(',','.'),
+            "sum": f'{sum:,}'.replace(',','&thinsp;'),
             "city": city,
             "datenstand": datenstand,
             "sitelink": sitelink,
