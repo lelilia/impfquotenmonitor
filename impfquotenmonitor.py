@@ -56,9 +56,11 @@ renderer = pystache.Renderer()
 with open("index.html", "w") as index_file:
     index_file.write(renderer.render_path(
         'index.mustache',
-        {'sum': sum,
-         'city': city,
-         'datenstand': datenstand,
-         "sitelink": sitelink,
-         "querylink": querylink}
+        {
+            "sum": f'{sum:,}'.replace(',','.'),
+            "city": city,
+            "datenstand": datenstand,
+            "sitelink": sitelink,
+            "querylink": querylink
+        }
     ))
