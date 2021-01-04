@@ -29,22 +29,29 @@ r = requests.get(url, allow_redirects=True)
 soup = BeautifulSoup(r.content, 'html.parser')
 datenstand = soup.find_all(string=re.compile('Stand'))[0]
 
-endpoint_url = "https://query.wikidata.org/sparql"
-query = "SELECT DISTINCT ?city ?cityLabel ?population ?sitelink WHERE {\n"
-query +=  "?city wdt:P31/wdt:P279* wd:Q486972;\n"
-query +=  "         wdt:P17 wd:Q183;\n"
-query +=  "         wdt:P1082 ?population.\n"
-query +=  "?sitelink schema:about ?city;\n"
-query +=  "          schema:isPartOf <https://de.wikipedia.org/>;\n"
-query +=  "FILTER (abs(?population - " + str(sum) + ") < 1000)\n"
-query +=  "SERVICE wikibase:label "
-query += '{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],de" }'
-query +="\n}"
-user_agent = "Impfquotenmonitorvergleich"
-sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
-sparql.setQuery(query)
-sparql.setReturnFormat(JSON)
-results = sparql.query().convert()
+diff = 1000
+result = []
+while True:
+    endpoint_url = "https://query.wikidata.org/sparql"
+    query = "SELECT DISTINCT ?city ?cityLabel ?population ?sitelink WHERE {\n"
+    query +=  "?city wdt:P31/wdt:P279* wd:Q486972;\n"
+    query +=  "         wdt:P17 wd:Q183;\n"
+    query +=  "         wdt:P1082 ?population.\n"
+    query +=  "?sitelink schema:about ?city;\n"
+    query +=  "          schema:isPartOf <https://de.wikipedia.org/>;\n"
+    query +=  "FILTER (abs(?population - "+str(sum)+") < "+str(diff)+")\n"
+    query +=  "SERVICE wikibase:label "
+    query += '{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],de" }'
+    query +="\n}"
+    user_agent = "Impfquotenmonitorvergleich"
+    sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    result = results["results"]["bindings"]
+    if result:
+        break
+    diff += 500
 result = random.choice(results["results"]["bindings"])
 city = result["cityLabel"]["value"]
 sitelink = result["sitelink"]["value"]
