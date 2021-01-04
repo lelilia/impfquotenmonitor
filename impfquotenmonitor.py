@@ -27,7 +27,7 @@ url = "https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten"
 url += "/Impfquoten-Tab.html"
 r = requests.get(url, allow_redirects=True)
 soup = BeautifulSoup(r.content, 'html.parser')
-datenstand = soup.find_all(string=re.compile('Datenstand'))[0]
+datenstand = soup.find_all(string=re.compile('Stand'))[0]
 
 endpoint_url = "https://query.wikidata.org/sparql"
 query = "SELECT DISTINCT ?city ?cityLabel ?population ?sitelink WHERE {\n"
