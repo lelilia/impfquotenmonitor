@@ -20,8 +20,8 @@ wb_obj = openpyxl.load_workbook(xlsx_file)
 sheet = wb_obj[wb_obj.sheetnames[1]]
 sum = 0
 for i in range(2,18):
-    if type(sheet.cell(row = i, column = 2).value) == int:
-        sum += sheet.cell(row = i, column = 2).value
+    if type(sheet.cell(row = i, column = 3).value) == int:
+        sum += sheet.cell(row = i, column = 3).value
 
 url = "https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten"
 url += "/Impfquoten-Tab.html"
