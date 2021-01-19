@@ -24,10 +24,10 @@ def get_sum():
     first_jab = 0
     second_jab = 0
     for i in range(4,20):
-        if type(sheet.cell(row = i, column = 3).value) == int:
-            first_jab += sheet.cell(row = i, column = 3).value
-        if type(sheet.cell(row = i, column = 8).value) == int:
-            second_jab += sheet.cell(row = i, column = 8).value
+        if type(sheet.cell(row = i, column = 4).value) == int:
+            first_jab += sheet.cell(row = i, column = 4).value
+        if type(sheet.cell(row = i, column = 9).value) == int:
+            second_jab += sheet.cell(row = i, column = 9).value
     return first_jab, second_jab
 
 def get_status():
