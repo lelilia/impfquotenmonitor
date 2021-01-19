@@ -1,6 +1,6 @@
 # Impfquotenmonitor
 
-This will generate a small website on the overall national progress of vaccinations against Covid-19 in Germany and will compare the total number to a German city of a similar size.
+This will generate a small website on the overall national progress of vaccinations against Covid-19 in Germany and will compare the total number to a city of a similar size.
 
 You can see this at https://www.johl.io/impfdaten/
 
