@@ -9,12 +9,11 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 import pystache
 
 def get_spreadsheet():
+    filename = 'Impfquotenmonitoring.xlsx'
     url = "https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten/"
-    url += "Impfquotenmonitoring.xlsx"
-    url += ";jsessionid=159D4550C958EDFAA9A49921FA132A35.internet122"
+    url += filename
     url += "?__blob=publicationFile"
     r = requests.get(url, allow_redirects=True)
-    filename = 'Impfquotenmonitoring.xlsx'
     open(filename, 'wb').write(r.content)
     return filename
 
@@ -22,11 +21,14 @@ def get_sum():
     xlsx_file = Path(os.getcwd(), get_spreadsheet())
     wb_obj = openpyxl.load_workbook(xlsx_file)
     sheet = wb_obj[wb_obj.sheetnames[1]]
-    sum = 0
-    for i in range(2,18):
+    first_jab = 0
+    second_jab = 0
+    for i in range(4,20):
         if type(sheet.cell(row = i, column = 3).value) == int:
-            sum += sheet.cell(row = i, column = 3).value
-    return sum
+            first_jab += sheet.cell(row = i, column = 3).value
+        if type(sheet.cell(row = i, column = 8).value) == int:
+            second_jab += sheet.cell(row = i, column = 8).value
+    return first_jab, second_jab
 
 def get_status():
     url = "https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten"
@@ -39,11 +41,11 @@ def get_status():
 def run_query(sum):
     diff = 1000
     result = []
+    #query +=  "         wdt:P17 wd:Q183;\n"
     while True:
         endpoint_url = "https://query.wikidata.org/sparql"
         query = "SELECT DISTINCT ?city ?cityLabel ?population ?sitelink WHERE {\n"
         query +=  "?city wdt:P31/wdt:P279* wd:Q486972;\n"
-        query +=  "         wdt:P17 wd:Q183;\n"
         query +=  "         wdt:P1082 ?population.\n"
         query +=  "?sitelink schema:about ?city;\n"
         query +=  "          schema:isPartOf <https://de.wikipedia.org/>;\n"
@@ -67,15 +69,16 @@ def run_query(sum):
     return city, sitelink, querylink
 
 if __name__ == "__main__":
-    sum = get_sum()
-    city, sitelink, querylink = run_query(sum)
+    first_jab, second_jab = get_sum()
+    city, sitelink, querylink = run_query(first_jab)
     datenstand = get_status()
     renderer = pystache.Renderer()
     with open("index.html", "w") as index_file:
         index_file.write(renderer.render_path(
             'index.mustache',
             {
-                "sum": f'{sum:,}'.replace(',','&thinsp;'),
+                "first_jab": f'{first_jab:,}'.replace(',','&thinsp;'),
+                "second_jab": f'{second_jab:,}'.replace(',','&thinsp;'),
                 "city": city,
                 "datenstand": datenstand,
                 "sitelink": sitelink,
